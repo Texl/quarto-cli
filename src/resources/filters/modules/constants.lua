@@ -120,7 +120,8 @@ local kLangCommentChars = {
   elm = { "#" },
   vhdl = { "--"},
   html = { "<!--", "-->"},
-  markdown = {"<!--", "-->"}
+  markdown = {"<!--", "-->"},
+  mojo = {"#"},
 }
 
 return {
