@@ -11715,7 +11715,8 @@ try {
                     "hover",
                     "select",
                     "below",
-                    "none"
+                    "none",
+                    "hyperlink"
                   ]
                 }
               ]

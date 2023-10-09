@@ -831,6 +831,18 @@ function processCodeAnnotations(format: Format, doc: Document) {
       dl.classList.add(kCodeAnnotationHiddenClz);
       dl.classList.add(kCodeAnnotationGridClz);
     });
+  } else if (annotationStyle === "hyperlink") {
+    const definitionLists = processCodeBlockAnnotation(
+      doc,
+      true,
+      "start",
+      replaceLineNumberWithAnnote,
+    );
+
+    Object.values(definitionLists).forEach((dl) => {
+      dl.classList.add(kCodeAnnotationHiddenClz);
+      dl.classList.add(kCodeAnnotationGridClz);
+    });
   } else {
     const definitionLists = processCodeBlockAnnotation(
       doc,
@@ -848,6 +860,65 @@ function processCodeAnnotations(format: Format, doc: Document) {
 // returns DLs that were processed
 
 function processCodeBlockAnnotation(
+  doc: Document,
+  interactiveAnnotations: boolean,
+  annotationPosition: "start" | "middle",
+  processDt?: (annotationEl: Element, dtEl: Element) => void,
+) {
+  const definitionLists: Record<string, Element> = {};
+  const codeBlockParents: Element[] = [];
+
+  // Read the definition list values which contain the annotations
+  const annoteNodes = doc.querySelectorAll(`span[${kCodeCellAttr}]`);
+  for (const annoteNode of annoteNodes) {
+    const annoteEl = annoteNode as Element;
+
+    // Accumulate the Code Blocks
+    const parentCodeBlock = processLineAnnotation(
+      doc,
+      annoteEl,
+      interactiveAnnotations,
+      annotationPosition,
+    );
+    if (parentCodeBlock && !codeBlockParents.includes(parentCodeBlock)) {
+      codeBlockParents.push(parentCodeBlock);
+    }
+
+    // Accumulate the Definition Lists
+    const parentDL = annoteEl.parentElement?.parentElement;
+    const codeParentDivId = parentCodeBlock?.parentElement?.parentElement?.id;
+    if (
+      parentDL && codeParentDivId &&
+      !Object.keys(definitionLists).includes(codeParentDivId)
+    ) {
+      definitionLists[codeParentDivId] = parentDL;
+    }
+
+    if (annoteEl.parentElement && processDt) {
+      processDt(annoteEl, annoteEl.parentElement);
+    }
+  }
+
+  // Inject a gutter for the annotations
+  for (const codeParentEl of codeBlockParents) {
+    if (codeParentEl.parentElement) {
+      // Decorate the pre so that we can adjust styles if needed
+      codeParentEl.parentElement.classList.add(kCodeAnnotationParentClz);
+    }
+
+    const gutterBgDivEl = doc.createElement("div");
+    gutterBgDivEl.classList.add(kCodeAnnotationGutterBgClz);
+    codeParentEl?.appendChild(gutterBgDivEl);
+
+    const gutterDivEl = doc.createElement("div");
+    gutterDivEl.classList.add(kCodeAnnotationGutterClz);
+    codeParentEl?.appendChild(gutterDivEl);
+  }
+
+  return definitionLists;
+}
+
+function processCodeBlockAnnotation2(
   doc: Document,
   interactiveAnnotations: boolean,
   annotationPosition: "start" | "middle",
@@ -928,6 +999,7 @@ function processLineAnnotation(
     const targetEl = doc.getElementById(targetId);
     if (targetEl) {
       const annoteAnchorEl = doc.createElement(interactive ? "button" : "a");
+      annoteAnchorEl.id = `${targetCell}-a${targetAnnotation}`;
       annoteAnchorEl.classList.add(kCodeAnnotationAnchorClz);
       annoteAnchorEl.setAttribute(
         kCodeCellTargetAttr,

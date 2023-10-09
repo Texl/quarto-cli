@@ -11714,7 +11714,8 @@ var require_yaml_intelligence_resources = __commonJS({
                   "hover",
                   "select",
                   "below",
-                  "none"
+                  "none",
+                  "hyperlink"
                 ]
               }
             ]

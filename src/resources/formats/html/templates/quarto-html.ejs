@@ -494,13 +494,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
 
       
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+      const coreSelectCodeLines = (annoteEl, targetCell, lines) => {
 
         const lineIds = lines.map((line) => {
           return targetCell + "-" + line;
@@ -525,12 +519,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           if (top !== null && height !== null && parent !== null) {
             // cook up a div (if necessary) and position it 
             let div = window.document.getElementById("code-annotation-line-highlight");
+
             if (div === null) {
               div = window.document.createElement("div");
               div.setAttribute("id", "code-annotation-line-highlight");
               div.style.position = 'absolute';
+            }
+
+            if (div.parent != parent) {
+              div.remove();
               parent.appendChild(div);
             }
+
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
             div.style.left = 0;
@@ -540,8 +540,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
               gutterDiv = window.document.createElement("div");
               gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
               gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
+            }
+
+            const codeCell = window.document.getElementById(targetCell);
+            const gutter = codeCell.querySelector('.code-annotation-gutter');
+            if (gutterDiv.parent != gutter) {
+              gutterDiv.remove();
               gutter.appendChild(gutterDiv);
             }
 
@@ -550,6 +554,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           }
           selectedAnnoteEl = annoteEl;
         }
+      }
+      
+      const selectCodeLines = (annoteEl) => {
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        coreSelectCodeLines(annoteEl, targetCell, lines);
       };
 
       const unselectCodeLines = () => {
@@ -686,7 +698,25 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         };
         window.tippy(annoteTarget, config); 
       }
-      <% } %>
+    <% } else if (codeAnnotations === "hyperlink") { %>
+
+      const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
+
+      const toggleCodeLines = (event) => {
+          const target = event.target;
+          if (target.classList.contains("code-annotation-active")) {
+            unselectCodeLines();
+            target.classList.remove('code-annotation-active');
+          } else {
+            annoteTargets.forEach( (annoteTarget) => { annoteTarget.classList.remove('code-annotation-active'); });
+            selectCodeLines(target);
+            target.classList.add('code-annotation-active');
+          }
+        };
+
+      annoteTargets.forEach( (annoteTarget) => { annoteTarget.addEventListener("click", toggleCodeLines); });
+
+    <% } %>
   <% } %>
 
   <% if (hoverCitations) { %>
