@@ -8406,21 +8406,41 @@ var require_yaml_intelligence_resources = __commonJS({
                           }
                         },
                         theme: {
-                          string: {
-                            description: {
-                              short: "The Github theme that should be used for Utterances.",
-                              long: "The Github theme that should be used for Utterances\n(`github-light`, `github-dark`, `github-dark-orange`,\n`icy-dark`, `dark-blue`, `photon-dark`, `body-light`,\nor `gruvbox-dark`)\n"
+                          anyOf: [
+                            "string",
+                            {
+                              enum: [
+                                "github-light",
+                                "github-dark",
+                                "github-dark-orange",
+                                "icy-dark",
+                                "dark-blue",
+                                "photon-dark",
+                                "body-light",
+                                "gruvbox-dark"
+                              ]
                             },
-                            completions: [
-                              "github-light",
-                              "github-dark",
-                              "github-dark-orange",
-                              "icy-dark",
-                              "dark-blue",
-                              "photon-dark",
-                              "body-light",
-                              "gruvbox-dark"
-                            ]
+                            {
+                              object: {
+                                closed: true,
+                                properties: {
+                                  light: {
+                                    string: {
+                                      description: "The light theme name."
+                                    }
+                                  },
+                                  dark: {
+                                    string: {
+                                      description: "The dark theme name."
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ],
+                          description: {
+                            short: "The Github theme that should be used for Utterances.",
+                            long: "The Github theme that should be used for Utterances\n(`github-light`, `github-dark`, `github-dark-orange`,\n`icy-dark`, `dark-blue`, `photon-dark`, `body-light`,\nor `gruvbox-dark`)\n"
                           }
                         },
                         "issue-term": {
@@ -22085,12 +22105,12 @@ var require_yaml_intelligence_resources = __commonJS({
         mermaid: "%%"
       },
       "handlers/mermaid/schema.yml": {
-        _internalId: 167847,
+        _internalId: 167867,
         type: "object",
         description: "be an object",
         properties: {
           "mermaid-format": {
-            _internalId: 167839,
+            _internalId: 167859,
             type: "enum",
             enum: [
               "png",
@@ -22106,7 +22126,7 @@ var require_yaml_intelligence_resources = __commonJS({
             exhaustiveCompletions: true
           },
           theme: {
-            _internalId: 167846,
+            _internalId: 167866,
             type: "anyOf",
             anyOf: [
               {

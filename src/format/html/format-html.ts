@@ -96,6 +96,11 @@ import {
   GiscusTheme,
   GiscusThemeToggleRecord,
 } from "../../core/giscus.ts";
+import {
+  buildUtterancesThemeKeys,
+  UtterancesTheme,
+  UtterancesThemeToggleRecord,
+} from "../../core/utterances.ts";
 import { metadataPostProcessor } from "./format-html-meta.ts";
 import { kHtmlEmptyPostProcessResult } from "../../command/render/constants.ts";
 import { kNotebookViewStyleNotebook } from "./format-html-constants.ts";
@@ -482,7 +487,18 @@ export async function htmlFormatExtras(
       throw new Error("Invalid utterances coniguration (must provide a repo)");
     }
     utterances["issue-term"] = utterances["issue-term"] || "pathname";
-    utterances["theme"] = utterances["theme"] || "github-light";
+
+    utterances["theme"] = utterances["theme"] || "";
+
+    const themeToggleRecord: UtterancesThemeToggleRecord = buildUtterancesThemeKeys(
+      Boolean(options.darkModeDefault),
+      utterances.theme as UtterancesTheme,
+    );
+
+    utterances["baseTheme"] = themeToggleRecord.baseTheme;
+    utterances["altTheme"] = themeToggleRecord.altTheme;
+    utterances["theme"] = utterances["baseTheme"];
+
     const utterancesAfterBody = temp.createFile({ suffix: "-utter.html" });
     Deno.writeTextFileSync(
       utterancesAfterBody,

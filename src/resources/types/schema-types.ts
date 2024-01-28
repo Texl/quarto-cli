@@ -213,7 +213,22 @@ service at hypothes.is. */;
     label?:
       string /* The label that will be assigned to issues created by Utterances. */;
     repo: string /* The Github repo that will be used to store comments. */;
-    theme?: string; /* The Github theme that should be used for Utterances
+    theme?:
+      | string
+      | (
+        | "github-light"
+        | "github-dark"
+        | "github-dark-orange"
+        | "icy-dark"
+        | "dark-blue"
+        | "photon-dark"
+        | "body-light"
+        | "gruvbox-dark"
+      )
+      | {
+        dark?: string /* The dark theme name. */;
+        light?: string; /* The light theme name. */
+      }; /* The Github theme that should be used for Utterances
 (`github-light`, `github-dark`, `github-dark-orange`,
 `icy-dark`, `dark-blue`, `photon-dark`, `body-light`,
 or `gruvbox-dark`) */

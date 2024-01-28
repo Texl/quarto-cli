@@ -156,23 +156,35 @@
                   string:
                     description: The label that will be assigned to issues created by Utterances.
                 theme:
-                  string:
-                    description:
-                      short: The Github theme that should be used for Utterances.
-                      long: |
-                        The Github theme that should be used for Utterances
-                        (`github-light`, `github-dark`, `github-dark-orange`,
-                        `icy-dark`, `dark-blue`, `photon-dark`, `body-light`,
-                        or `gruvbox-dark`)
-                    completions:
-                      - github-light
-                      - github-dark
-                      - github-dark-orange
-                      - icy-dark
-                      - dark-blue
-                      - photon-dark
-                      - body-light
-                      - gruvbox-dark
+                  anyOf:
+                    - string
+                    - enum:
+                        [
+                          github-light,
+                          github-dark,
+                          github-dark-orange,
+                          icy-dark,
+                          dark-blue,
+                          photon-dark,
+                          body-light,
+                          gruvbox-dark,
+                        ]
+                    - object:
+                        closed: true
+                        properties:
+                          light:
+                            string:
+                              description: The light theme name.
+                          dark:
+                            string:
+                              description: The dark theme name.
+                  description:
+                    short: The Github theme that should be used for Utterances.
+                    long: |
+                      The Github theme that should be used for Utterances
+                      (`github-light`, `github-dark`, `github-dark-orange`,
+                      `icy-dark`, `dark-blue`, `photon-dark`, `body-light`,
+                      or `gruvbox-dark`)
                 issue-term:
                   string:
                     description:
